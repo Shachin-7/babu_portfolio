@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Me &amp; My Journey — Babu Chinnasamy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800;900&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --jr-bg:#d9d4c9;
+  --jr-bg-2:#cfc9bc;
+  --jr-card:rgba(255,255,255,.42);
+  --jr-card-solid:#e6e2d8;
+  --jr-ink:#141311;
+  --jr-mut:#6d6a62;
+  --jr-yellow:#f2ef2a;
+  --jr-sans:'Archivo',Helvetica,Arial,sans-serif;
+  --jr-mono:'Space Mono',ui-monospace,monospace;
+  --jr-radius:22px;
+  /* ---- SIDEBAR DIMENSION SYSTEM ----------------------------------
+     Change --jr-sidebar-w (and optionally --jr-gap) and everything
+     adapts: the fixed sidebar, the content offset, and all cqw-based
+     typography, which is sized against the content column itself. */
+  --jr-sidebar-w:330px;
+  --jr-gap:24px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body.jr{
+  background:radial-gradient(1200px 700px at 65% 20%, var(--jr-bg), var(--jr-bg-2) 80%);
+  color:var(--jr-ink);
+  font-family:var(--jr-sans);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body.jr::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* blurred presence */
+.jr-blur-fig{position:fixed;z-index:0;pointer-events:none;top:2vh;left:52%;width:min(62vh,600px);opacity:.85}
+.jr-blur-fig img{width:100%;display:block}
+
+/* ================= SIDEBAR (unchanged system) ================= */
+.jr-sidebar{
+  position:fixed!important;top:0!important;left:0!important;bottom:0!important;z-index:40;
+  width:var(--jr-sidebar-w)!important;
+  padding:18px 0 18px 18px;
+  display:flex;flex-direction:column;gap:12px;
+  overflow-y:auto;scrollbar-width:none;
+}
+.jr-sidebar::-webkit-scrollbar{display:none}
+.jr-card{
+  background:var(--jr-card);border:1px solid rgba(255,255,255,.5);
+  border-radius:var(--jr-radius);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:20px;
+}
+.jr-brand-row{display:flex;align-items:center;justify-content:space-between}
+.jr-logo{display:inline-block;background:var(--jr-yellow);font-family:'Archivo Black',var(--jr-sans);font-size:17px;padding:9px 14px;border-radius:12px}
+.jr-logo sup{font-size:9px}
+.jr-socials a{width:30px;height:30px;border-radius:9px;background:var(--jr-ink);color:#fff;display:grid;place-items:center;font-family:var(--jr-mono);font-size:11px;text-decoration:none}
+.jr-blurb{margin-top:16px;font-size:14.5px;line-height:1.55;color:#3c3a34}
+.jr-stats{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center}
+.jr-stats .jr-div{width:1px;height:56px;background:rgba(20,19,17,.18)}
+.jr-stat b{display:block;font-family:'Archivo Black',var(--jr-sans);font-size:26px;color:#c9c412}
+.jr-stat span{display:block;margin-top:6px;font-weight:700;font-size:13.5px;line-height:1.25}
+.jr-nav{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
+.jr-pill{
+  display:inline-flex;align-items:center;gap:10px;background:#efece3;border:1px solid rgba(20,19,17,.06);
+  border-radius:12px;padding:11px 16px;font-weight:800;font-size:14px;letter-spacing:.02em;text-transform:uppercase;
+  color:var(--jr-ink);text-decoration:none;transition:transform .18s ease;
+}
+.jr-pill:hover{transform:translateX(4px)}
+.jr-pill.is-active{background:var(--jr-yellow)}
+.jr-logos{display:flex;overflow:hidden;white-space:nowrap;font-family:'Archivo Black',var(--jr-sans);font-size:15px;color:#4a4840;padding:16px 0}
+.jr-logos .jr-track{display:inline-flex;gap:26px;animation:jrTick 18s linear infinite}
+@keyframes jrTick{to{transform:translateX(-50%)}}
+.jr-email{display:flex;align-items:center;gap:10px;background:#dcd7ca;border-radius:14px;padding:11px 14px}
+.jr-email span{flex:1;font-family:var(--jr-mono);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.jr-email button{border:none;background:transparent;cursor:pointer;font-size:14px}
+.jr-cta{
+  display:block;text-align:center;text-decoration:none;background:var(--jr-yellow);color:var(--jr-ink);
+  font-weight:800;font-size:17px;border-radius:var(--jr-radius);padding:19px 20px;
+  box-shadow:0 10px 26px rgba(120,110,20,.25);
+}
+
+/* ================= MAIN ================= */
+.jr-main{
+  position:relative;z-index:5;
+  /* !important so no page-level CSS can slide content under the fixed sidebar */
+  margin-left:calc(var(--jr-sidebar-w) + var(--jr-gap))!important;
+  padding:0 4vw 120px 4vw;
+  container-type:inline-size;
+  overflow-x:clip;
+}
+.jr-hero{min-height:88svh;display:flex;flex-direction:column;justify-content:center;max-width:760px}
+.jr-tag{
+  display:inline-flex;width:max-content;border:1.5px solid rgba(20,19,17,.35);border-radius:100px;
+  padding:7px 16px;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:26px;
+}
+.jr-hero h1{font-weight:800;font-size:clamp(46px,7.6cqw,96px);letter-spacing:-.035em;line-height:1.0}
+.jr-hero p{margin-top:30px;max-width:440px;font-size:17px;line-height:1.65;color:#3c3a34}
+.jr-reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.jr-reveal.jr-in{opacity:1;transform:none}
+
+/* ================= TIMELINE + CONNECTOR ================= */
+.jr-timeline{
+  position:relative;
+  display:flex;flex-direction:column;gap:16vh;
+  padding-top:6vh;
+}
+.jr-tsvg{
+  position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visible;
+}
+.jr-tsvg path{
+  fill:none;stroke:var(--jr-ink);stroke-width:2.5;stroke-linecap:round;
+}
+.jr-tsvg circle{
+  fill:var(--jr-yellow);stroke:var(--jr-ink);stroke-width:2;
+  transform-box:fill-box;transform-origin:center;
+  transform:scale(0);transition:transform .45s cubic-bezier(.34,1.56,.64,1);
+}
+.jr-tsvg circle.on{transform:scale(1)}
+
+.jr-tcard{
+  position:relative;z-index:1;
+  width:min(560px,88%);
+  background:var(--jr-card-solid);
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:26px;
+  padding:44px 46px;
+  box-shadow:0 30px 70px rgba(60,55,40,.18);
+}
+.jr-tcard.jr-left{align-self:flex-start}
+.jr-tcard.jr-right{align-self:flex-end}
+.jr-yr{
+  font-family:'Archivo Black',var(--jr-sans);
+  font-size:clamp(52px,5.6cqw,84px);line-height:.9;letter-spacing:-.02em;
+  color:var(--jr-yellow);text-shadow:0 1px 0 rgba(0,0,0,.08);
+}
+.jr-tcard h3{margin-top:18px;font-weight:800;font-size:clamp(22px,2.3cqw,30px);letter-spacing:-.02em}
+.jr-tcard p{margin-top:12px;font-size:15.5px;line-height:1.6;color:#4a4840}
+.jr-foot{margin-top:26px;display:flex;align-items:center;gap:12px}
+.jr-ava{width:44px;height:44px;border-radius:50%;overflow:hidden;background:#c9c4b6;flex:none}
+.jr-ava img{width:100%;height:100%;object-fit:cover;object-position:top}
+.jr-who{font-size:13px;color:var(--jr-mut);line-height:1.4}
+.jr-who b{display:block;color:var(--jr-ink)}
+.jr-more{
+  margin-left:auto;border:1.5px solid rgba(20,19,17,.3);border-radius:100px;
+  padding:9px 18px;font-weight:700;font-size:13px;color:var(--jr-ink);text-decoration:none;white-space:nowrap;
+  transition:background .2s ease;
+}
+.jr-more:hover{background:rgba(255,255,255,.5)}
+
+.jr-close{margin-top:16vh;max-width:760px}
+.jr-close h2{font-weight:800;font-size:clamp(34px,5cqw,64px);letter-spacing:-.03em;line-height:1.02}
+.jr-close h2 .jr-hl{background:var(--jr-yellow);padding:0 .14em;border-radius:.14em}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:960px){
+  .jr-sidebar{position:static!important;width:auto!important;padding:16px;overflow:visible}
+  .jr-main{margin-left:0;padding:0 18px 90px}
+  .jr-hero{min-height:auto;padding-top:34px}
+  .jr-blur-fig{position:absolute;left:30%;top:0;width:90vw;opacity:.6}
+  .jr-timeline{gap:8vh}
+  .jr-tcard{width:100%;padding:30px 24px}
+  .jr-tcard.jr-left,.jr-tcard.jr-right{align-self:stretch}
+  .jr-tsvg{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .jr-reveal{opacity:1;transform:none;transition:none}
+  .jr-logos .jr-track{animation:none}
+  .jr-tsvg circle{transition:none;transform:scale(1)}
+}
+</style>
+</head>
+<body class="jr">
+
+<div class="jr-blur-fig" aria-hidden="true"><img src="assets/blur-portrait.webp" alt=""></div>
+
+<aside class="jr-sidebar">
+  <div class="jr-card">
+    <div class="jr-brand-row">
+      <span class="jr-logo">BC<sup>®</sup></span>
+      <div class="jr-socials"><a href="https://linkedin.com/in/babu-Chinnasamy" target="_blank" rel="noopener">in</a></div>
+    </div>
+    <p class="jr-blurb">Working across engineering, marketing, and operations to deliver power solutions that merge commercial strategy, technical depth, and long-term uptime.</p>
+  </div>
+  <div class="jr-card jr-stats">
+    <div class="jr-stat"><b>25+</b><span>Years of<br>experience</span></div>
+    <div class="jr-div"></div>
+    <div class="jr-stat"><b>5×</b><span>Revenue<br>growth</span></div>
+  </div>
+  <nav class="jr-card jr-nav" aria-label="Site">
+    <a class="jr-pill" href="index.html">Home</a>
+    <a class="jr-pill is-active" href="#" aria-current="page">About me</a>
+    <a class="jr-pill" href="experience.html">Experience</a>
+    <a class="jr-pill" href="index.html#pipeline">Pipeline</a>
+    <a class="jr-pill" href="index.html#leadership">Leadership</a>
+    <a class="jr-pill" href="index.html#contact">Contact</a>
+  </nav>
+  <div class="jr-card jr-logos" aria-hidden="true">
+    <div class="jr-track">
+      <span>ABB</span><span>GE</span><span>TVS</span><span>JV&nbsp;ASSOCIATE</span><span>RPI</span>
+      <span>ABB</span><span>GE</span><span>TVS</span><span>JV&nbsp;ASSOCIATE</span><span>RPI</span>
+    </div>
+  </div>
+  <div class="jr-card" style="padding:12px">
+    <div class="jr-email">
+      <span id="jrEmail">cbabu.connect@gmail.com</span>
+      <button id="jrCopy" aria-label="Copy email">⧉</button>
+    </div>
+  </div>
+  <a class="jr-cta" href="mailto:cbabu.connect@gmail.com">Book a Call</a>
+</aside>
+
+<main class="jr-main" id="main-content">
+
+  <section class="jr-hero">
+    <span class="jr-tag jr-reveal">Start small · Grow big</span>
+    <h1 class="jr-reveal">About Me (&amp;)<br>My Journey</h1>
+    <p class="jr-reveal">Twenty-five years ago I started as a development engineer in Madurai. What happened after that is easier to show than explain.</p>
+  </section>
+
+  <div class="jr-timeline" id="timeline">
+    <svg class="jr-tsvg" id="tsvg" aria-hidden="true">
+      <path id="tpath"></path>
+      <g id="tnodes"></g>
+    </svg>
+
+    <article class="jr-tcard jr-right jr-reveal">
+      <div class="jr-yr">'99</div>
+      <h3>Starting out at TVS Cherry</h3>
+      <p>Led NPI teams launching new products into fiercely competitive industrial markets. Learned the discipline that still runs everything: ship what customers actually need, on time.</p>
+      <div class="jr-foot">
+        <span class="jr-ava"><img src="assets/avatar.webp" alt=""></span>
+        <span class="jr-who"><b>Development Engineer</b>@tvs · Madurai, India</span>
+        <a class="jr-more" href="experience.html">Read more</a>
+      </div>
+    </article>
+
+    <article class="jr-tcard jr-left jr-reveal">
+      <div class="jr-yr">'04</div>
+      <h3>Eleven years inside GE</h3>
+      <p>Built multi-generation product plans blending demand forecasting with profitability analysis — presenting power solutions to utilities, industrial customers, and consultants across two continents.</p>
+      <div class="jr-foot">
+        <span class="jr-ava"><img src="assets/avatar.webp" alt=""></span>
+        <span class="jr-who"><b>Senior Lead Systems Engineer</b>@ge · India &amp; Plainville, CT</span>
+        <a class="jr-more" href="experience.html">Read more</a>
+      </div>
+    </article>
+
+    <article class="jr-tcard jr-right jr-reveal">
+      <div class="jr-yr">'10</div>
+      <h3>Sharpening the commercial edge</h3>
+      <p>Completed an MS in Management at Rensselaer Polytechnic Institute while working full-time — the pivot from pure engineering into product and commercial leadership.</p>
+      <div class="jr-foot">
+        <span class="jr-ava"><img src="assets/avatar.webp" alt=""></span>
+        <span class="jr-who"><b>MS in Management</b>@rpi · Hartford, CT</span>
+        <a class="jr-more" href="experience.html">Read more</a>
+      </div>
+    </article>
+
+    <article class="jr-tcard jr-left jr-reveal">
+      <div class="jr-yr">'15</div>
+      <h3>Going global</h3>
+      <p>Directed global commercialization strategy for power distribution — go-to-market, launch execution, channel readiness, competitive intelligence, and the financial cases behind every investment.</p>
+      <div class="jr-foot">
+        <span class="jr-ava"><img src="assets/avatar.webp" alt=""></span>
+        <span class="jr-who"><b>Global Product Marketing Leader</b>@ge · Plainville, CT</span>
+        <a class="jr-more" href="experience.html">Read more</a>
+      </div>
+    </article>
+
+    <article class="jr-tcard jr-right jr-reveal">
+      <div class="jr-yr">'18</div>
+      <h3>Mission-critical at ABB</h3>
+      <p>Leading commercial strategy for Automatic Transfer Switches, energy management, and digital power across North America — value built on uptime, N+1/2N redundancy, and lifecycle cost.</p>
+      <div class="jr-foot">
+        <span class="jr-ava"><img src="assets/avatar.webp" alt=""></span>
+        <span class="jr-who"><b>Product Marketing Manager</b>@abb · Bloomfield, CT</span>
+        <a class="jr-more" href="experience.html">Read more</a>
+      </div>
+    </article>
+
+    <article class="jr-tcard jr-left jr-reveal">
+      <div class="jr-yr">Now</div>
+      <h3>5× and still climbing</h3>
+      <p>Delivered 5× revenue growth within three years of a new product launch, with the portfolio positioned for 3× against the 2025 baseline as data center demand accelerates.</p>
+      <div class="jr-foot">
+        <span class="jr-ava"><img src="assets/avatar.webp" alt=""></span>
+        <span class="jr-who"><b>Director-level leadership</b>Electrification &amp; Data Centers</span>
+        <a class="jr-more" href="experience.html">Read more</a>
+      </div>
+    </article>
+  </div>
+
+  <section class="jr-close jr-reveal">
+    <h2>The journey continues —<br><span class="jr-hl">powering what can't fail.</span></h2>
+  </section>
+
+</main>
+
+<script>
+(() => {
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = () => matchMedia('(max-width:960px)').matches;
+
+/* ---------- LAYOUT GUARD ----------
+   Everything except the sidebar and blurred figure MUST live inside
+   .jr-main to get the sidebar offset. If any section was left as a
+   direct child of <body> during integration, adopt it automatically. */
+(function layoutGuard(){
+  const body = document.body;
+  let main = document.querySelector('.jr-main');
+  if (!main){
+    main = document.createElement('main');
+    main.className = 'jr-main';
+    body.appendChild(main);
+  }
+  [...body.children].forEach(el => {
+    if (el === main) return;
+    if (el.matches('.jr-sidebar, .jr-blur-fig, script, style, link, template')) return;
+    main.appendChild(el);
+  });
+})();
+
+/* reveals */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting){ e.target.classList.add('jr-in'); io.unobserve(e.target); }
+}), { threshold:.14 });
+const lineDriven = !reduced && !isMobile();
+document.querySelectorAll('.jr-reveal').forEach(el => {
+  if (lineDriven && el.classList.contains('jr-tcard')) return; // the line reveals these
+  io.observe(el);
+});
+
+/* copy email */
+const cp = document.getElementById('jrCopy');
+if (cp) cp.addEventListener('click', async () => {
+  try{
+    await navigator.clipboard.writeText(document.getElementById('jrEmail').textContent.trim());
+    cp.textContent='✓'; setTimeout(()=>cp.textContent='⧉',1300);
+  }catch(e){}
+});
+
+/* blurred figure parallax */
+const fig = document.querySelector('.jr-blur-fig');
+if (fig && !reduced){
+  addEventListener('scroll', () => { fig.style.transform = `translateY(${scrollY*0.06}px)`; }, {passive:true});
+}
+
+/* ============================================================
+   CONNECTOR CURVE — draws card-to-card as you scroll
+   ============================================================ */
+const tl    = document.getElementById('timeline');
+const svg   = document.getElementById('tsvg');
+const path  = document.getElementById('tpath');
+const nodesG= document.getElementById('tnodes');
+if (!tl || !svg || !path) return;
+
+let L = 0, circles = [], cardAts = [];
+
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+
+function anchors(){
+  const tlRect = tl.getBoundingClientRect();
+  return [...tl.querySelectorAll('.jr-tcard')].map(c => {
+    const r = c.getBoundingClientRect();
+    const left = c.classList.contains('jr-left');
+    const x = (left ? r.right : r.left) - tlRect.left;   // inner edge
+    return {
+      out: left ? 1 : -1,                                // outward, into the gap
+      entry:{ x, y:(r.top + r.height*0.20) - tlRect.top },
+      exit :{ x, y:(r.top + r.height*0.80) - tlRect.top }
+    };
+  });
+}
+
+function build(){
+  if (isMobile()){ path.removeAttribute('d'); nodesG.innerHTML=''; L = 0; return; }
+  const tlRect = tl.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${tlRect.width} ${tlRect.height}`);
+  svg.setAttribute('width', tlRect.width);
+  svg.setAttribute('height', tlRect.height);
+
+  const cs = anchors();
+  if (cs.length < 2) return;
+
+  // wide, alternating bows — the signature sweep
+  const bow = i => Math.min(380, tlRect.width * (i % 2 ? 0.42 : 0.30));
+  const probe = document.createElementNS('http://www.w3.org/2000/svg','path');
+  const nodeAt = [];
+  let d = '';
+  const mark = p => { probe.setAttribute('d', d); nodeAt.push({ p, at: probe.getTotalLength() }); };
+
+  // lead-in: sweep down into the first card with a horizontal tangent
+  const f = cs[0], b0 = bow(0);
+  d = `M ${f.entry.x + f.out*b0*1.15} ${f.entry.y - 260}`
+    + ` C ${f.entry.x + f.out*b0*1.15} ${f.entry.y - 110},`
+    + ` ${f.entry.x + f.out*b0} ${f.entry.y},`
+    + ` ${f.entry.x} ${f.entry.y}`;
+  mark(f.entry);
+
+  for (let i = 0; i < cs.length; i++){
+    const c = cs[i];
+    // ride straight down the card's inner edge
+    d += ` L ${c.exit.x} ${c.exit.y}`;
+    mark(c.exit);
+    const n = cs[i+1];
+    if (!n) break;
+    const bw = bow(i+1);
+    const dy = n.entry.y - c.exit.y;
+    // horizontal-tangent bow through the gap (controls pushed sideways, not down)
+    d += ` C ${c.exit.x + c.out*bw} ${c.exit.y + dy*0.14},`
+       + ` ${n.entry.x + n.out*bw} ${n.entry.y - dy*0.14},`
+       + ` ${n.entry.x} ${n.entry.y}`;
+    mark(n.entry);
+  }
+
+  // tail: drift off past the last card, clamped so it can't get clipped
+  const l = cs[cs.length-1];
+  const room = l.out > 0 ? (tlRect.width - l.exit.x - 24) : (l.exit.x - 24);
+  const bt = Math.min(bow(cs.length), room / 1.5);
+  d += ` C ${l.exit.x + l.out*bt} ${l.exit.y + 60},`
+     + ` ${l.exit.x + l.out*bt*1.5} ${l.exit.y + 240},`
+     + ` ${l.exit.x + l.out*bt*1.25} ${l.exit.y + 340}`;
+
+  path.setAttribute('d', d);
+  L = path.getTotalLength();
+  path.style.strokeDasharray = L;
+  path.style.strokeDashoffset = reduced ? 0 : L;
+
+  nodesG.innerHTML = '';
+  circles = nodeAt.map(n => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx', n.p.x); c.setAttribute('cy', n.p.y); c.setAttribute('r', 7);
+    if (reduced) c.classList.add('on');
+    nodesG.appendChild(c);
+    return { el:c, at:n.at };
+  });
+
+  // card i is revealed when the drawn line reaches its entry node (nodeAt[2*i])
+  cardAts = [...tl.querySelectorAll('.jr-tcard')].map((el, i) => ({
+    el, at: nodeAt[2*i] ? nodeAt[2*i].at : 0
+  }));
+}
+
+/* scroll scrub */
+let target=0, p=0;
+function onScroll(){
+  const r = tl.getBoundingClientRect();
+  target = clamp((innerHeight*0.68 - r.top) / r.height, 0, 1);
+}
+addEventListener('scroll', onScroll, {passive:true});
+let rz;
+addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => {
+  build(); onScroll();
+  if (isMobile()) document.querySelectorAll('.jr-tcard').forEach(c => c.classList.add('jr-in'));
+}, 150); });
+
+function render(){
+  if (!reduced && !isMobile() && L){
+    p += (target - p) * .075;
+    const drawn = L * p;
+    path.style.strokeDashoffset = L - drawn;
+    circles.forEach(c => c.el.classList.toggle('on', drawn >= c.at - 1));
+    cardAts.forEach(c => { if (drawn >= c.at - 40) c.el.classList.add('jr-in'); });
+  }
+  requestAnimationFrame(render);
+}
+
+function boot(){
+  build(); onScroll(); render();
+  if (!L && !isMobile()) document.querySelectorAll('.jr-tcard').forEach(c => io.observe(c));
+  if (window.ResizeObserver){
+    let t;
+    new ResizeObserver(() => {
+      clearTimeout(t);
+      t = setTimeout(() => { build(); onScroll(); }, 120);
+    }).observe(tl);
+  }
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot);
+else addEventListener('load', boot);
+addEventListener('load', () => { build(); onScroll(); });
+})();
+</script>
+</body>
+</html>

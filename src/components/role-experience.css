@@ -1,0 +1,686 @@
+/* ==========================================================================
+   Role Experience — grid-based 2-column expanding cards + modal
+   ========================================================================== */
+
+.role-exp {
+  --re-ink: #151514;
+  --re-muted: #6c6862;
+  --re-accent: #f0592c; /* Site orange accent color */
+  --re-card-bg: #ffffff;
+  --re-tag-bg: rgba(21, 21, 20, 0.04);
+  --re-border: rgba(21, 21, 20, 0.08);
+  --re-radius: 20px;
+
+  --re-display: 'Archivo Black', var(--sans), sans-serif;
+  --re-body: var(--sans);
+
+  padding: 40px 0;
+}
+
+/* ---------- grid and rows ---------- */
+
+.role-exp-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.role-exp-row {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.role-exp-card {
+  position: relative;
+  flex: 1 1 50%; /* Equal 50/50 split default */
+  min-height: 380px;
+  padding: 30px;
+  display: flex;
+  flex-direction: row; /* Side-by-side text and visual */
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  text-align: left;
+  background: var(--re-card-bg);
+  border: 1px solid var(--re-border);
+  border-radius: var(--re-radius);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  overflow: hidden;
+  font-family: var(--re-body);
+  transition: flex-basis 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s ease;
+}
+
+.role-exp-card:focus-visible {
+  outline: 2px solid var(--re-accent);
+  outline-offset: 2px;
+}
+
+/* Row hover dynamics: non-hovered card in row shrinks, hovered expands */
+.role-exp-row:hover .role-exp-card {
+  flex-basis: 30%;
+  opacity: 0.8;
+}
+
+.role-exp-row .role-exp-card:hover {
+  flex-basis: 70%;
+  opacity: 1;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+}
+
+/* Match layout active states when focusing / keyboard indexing */
+.role-exp-row:has(.role-exp-card.is-active) .role-exp-card {
+  flex-basis: 30%;
+  opacity: 0.8;
+}
+
+.role-exp-row:has(.role-exp-card.is-active) .role-exp-card.is-active {
+  flex-basis: 70%;
+  opacity: 1;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+}
+
+.role-exp-card-content-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.role-exp-card-top {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.role-exp-company {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--re-ink);
+}
+
+.role-exp-years {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--re-accent);
+}
+
+/* body copy only reveals once a card is active/expanded */
+.role-exp-card-body {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease 0.08s, transform 0.35s ease 0.08s;
+  pointer-events: none;
+}
+
+.role-exp-card.is-active .role-exp-card-body,
+.role-exp-card:hover .role-exp-card-body {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.role-exp-summary {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--re-muted);
+  margin: 0 0 14px;
+}
+
+.role-exp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.role-exp-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 6px 10px;
+  border-radius: var(--re-radius);
+  background: var(--re-tag-bg);
+  color: var(--re-muted);
+  white-space: nowrap;
+}
+
+.role-exp-card-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.role-exp-eyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--re-accent);
+}
+
+.role-exp-title {
+  font-family: var(--re-display);
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.15;
+  margin: 0;
+  color: var(--re-ink);
+  text-transform: uppercase;
+}
+
+/* ---------- card visual wrapper slide-out ---------- */
+
+.card-visual-wrapper {
+  flex: 0 0 0px;
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition: flex-basis 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s ease;
+}
+
+/* Only display visual small box in expanded cards */
+.role-exp-card.is-active .card-visual-wrapper,
+.role-exp-card:hover .card-visual-wrapper {
+  flex-basis: 220px;
+  width: 220px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.card-visual {
+  position: relative;
+  width: 220px;
+  height: 260px;
+  background: #f7f7f6;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(21, 21, 20, 0.04);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.card-visual-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #151514;
+  color: #ffffff;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 99px;
+  text-transform: uppercase;
+}
+
+/* Graph Visual */
+.graph-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 100px;
+  width: 150px;
+  position: relative;
+}
+
+.graph-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1.5px dashed #00bfa5;
+  opacity: 0.5;
+}
+
+.graph-bar {
+  flex: 1;
+  background: #e5e5e3;
+  border-radius: 6px 6px 0 0;
+  transition: background 0.3s ease;
+}
+
+.graph-bar.active {
+  background: #00bfa5;
+  box-shadow: 0 0 15px rgba(0, 191, 165, 0.4);
+}
+
+/* Chat Visual */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 90%;
+  padding-top: 20px;
+}
+
+.chat-bubble {
+  background: #ffffff;
+  border: 1px solid rgba(21, 21, 20, 0.05);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+  max-width: 90%;
+  transform: rotate(-1deg);
+}
+
+.chat-bubble.bubble-1 {
+  align-self: flex-start;
+  transform: rotate(-2deg);
+}
+
+.chat-bubble.bubble-2 {
+  align-self: flex-end;
+  transform: rotate(2deg);
+  border-left: 3px solid #f0592c;
+}
+
+.chat-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.orange-avatar {
+  background: #f0592c;
+  color: #ffffff;
+}
+
+.text-avatar {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.chat-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.chat-user {
+  font-size: 9px;
+  font-weight: 700;
+  color: #151514;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.online-dot {
+  width: 4px;
+  height: 4px;
+  background: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.chat-text p {
+  margin: 0;
+  font-size: 9px;
+  color: #6c6862;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+/* Nodes Visual */
+.nodes-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nodes-svg {
+  width: 180px;
+  height: 90px;
+}
+
+.glow-node {
+  filter: drop-shadow(0 0 4px #f0592c);
+  animation: pulse-node 2s infinite alternate;
+}
+
+@keyframes pulse-node {
+  0% { r: 5; opacity: 0.8; }
+  100% { r: 8; opacity: 1; }
+}
+
+/* Funnel Visual */
+.funnel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 120px;
+}
+
+.funnel-tier {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #6c6862;
+  background: #ffffff;
+  border: 1px solid rgba(21, 21, 20, 0.06);
+  border-radius: 6px;
+  padding: 6px 12px;
+  text-align: center;
+}
+
+.funnel-tier.tier-1 { width: 100%; }
+.funnel-tier.tier-2 { width: 80%; border-color: rgba(240, 89, 44, 0.2); color: #f0592c; }
+.funnel-tier.tier-3 { width: 60%; }
+
+/* Circuit Visual */
+.circuit-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.circuit-block {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  border: 1px solid rgba(21, 21, 20, 0.08);
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.circuit-block.active {
+  background: #f0592c;
+  color: #ffffff;
+  border-color: #f0592c;
+}
+
+.circuit-line {
+  width: 25px;
+  height: 1.5px;
+  background: rgba(21, 21, 20, 0.15);
+  position: relative;
+}
+
+.circuit-line .pulse {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #f0592c;
+  border-radius: 50%;
+  top: -1.2px;
+  animation: pulse-line 1.5s infinite linear;
+}
+
+@keyframes pulse-line {
+  0% { left: 0%; }
+  100% { left: 100%; }
+}
+
+.circuit-gate {
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid rgba(21, 21, 20, 0.08);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+/* Blueprint Visual */
+.blueprint-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border: 1px dashed rgba(21, 21, 20, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blueprint-ring {
+  width: 70px;
+  height: 70px;
+  border: 1.5px solid #f0592c;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.blueprint-crosshair {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #151514;
+  border-radius: 50%;
+}
+
+.blueprint-line {
+  position: absolute;
+  background: rgba(21, 21, 20, 0.1);
+}
+
+.blueprint-line.h {
+  left: -10px;
+  right: -10px;
+  height: 1px;
+}
+
+.blueprint-line.v {
+  top: -10px;
+  bottom: -10px;
+  width: 1px;
+}
+
+/* ---------- expanded modal ---------- */
+
+.role-exp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 10000;
+}
+
+.role-exp-modal {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--re-card-bg);
+  border-radius: 28px;
+  padding: 56px 64px 48px;
+  font-family: var(--re-body);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
+}
+
+.role-exp-close,
+.role-exp-arrow {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--re-border);
+  background: #ffffff;
+  color: var(--re-ink);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  z-index: 10;
+}
+.role-exp-close:hover,
+.role-exp-arrow:hover {
+  background: rgba(21, 21, 20, 0.04);
+}
+
+.role-exp-close {
+  top: 24px;
+  right: 24px;
+}
+
+.role-exp-arrow-left {
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.role-exp-arrow-right {
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.role-exp-modal-years {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--re-accent);
+  margin-bottom: 10px;
+}
+
+.role-exp-modal-title {
+  font-family: var(--re-display);
+  font-size: clamp(28px, 4vw, 36px);
+  line-height: 1.15;
+  margin: 0 0 10px;
+  color: var(--re-ink);
+}
+
+.role-exp-modal-meta {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--re-muted);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.role-exp-divider {
+  border: none;
+  border-top: 1px solid var(--re-border);
+  margin: 24px 0;
+}
+
+.role-exp-modal-summary {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--re-ink);
+  margin: 0 0 24px;
+}
+
+.role-exp-bullets {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.role-exp-bullets li {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--re-muted);
+}
+
+.role-exp-bullets strong {
+  color: var(--re-ink);
+  font-weight: 700;
+}
+
+.role-exp-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 36px;
+}
+
+.role-exp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d8d8d5;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.role-exp-dot.is-active {
+  background: var(--re-accent);
+  transform: scale(1.2);
+}
+
+/* ---------- mobile / tablet ---------- */
+
+@media (max-width: 900px) {
+  .role-exp-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .role-exp-card {
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: auto;
+    width: 100%;
+    gap: 16px;
+  }
+  .role-exp-card-body {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .card-visual-wrapper {
+    display: none !important; /* Hide visuals on mobile for super clean layout */
+  }
+  .role-exp-modal {
+    padding: 48px 24px 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-exp-card,
+  .role-exp-card-body,
+  .role-exp-dot,
+  .card-visual-wrapper {
+    transition: none !important;
+  }
+}

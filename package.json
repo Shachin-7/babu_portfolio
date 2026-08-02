@@ -1,0 +1,12 @@
+{
+  "name": "babu-portfolio",
+  "version": "1.0.0",
+  "description": "Babu Chinnasamy — Personal Portfolio Website",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server -p 8080 ./"
+  },
+  "keywords": [],
+  "author": "Babu Chinnasamy",
+  "license": "ISC"
+}
