@@ -2518,10 +2518,112 @@ function measure(){
 
 /* ---------- scroll scrub ---------- */
 let target=0, p=0, docked=false;
+let heroIntroDone = false;
+let heroIntroTl = null;
+
+function playHeroEntranceAnimation() {
+  if (reduced || !window.gsap) {
+    heroIntroDone = true;
+    return;
+  }
+
+  const giantText = document.querySelector('#giant text');
+  const hhTitle = document.getElementById('hhTitle');
+  const navItems = document.querySelectorAll('.hh-nav li');
+  const attrItems = document.querySelectorAll('#attrs .hh-attr');
+  const chips = document.querySelectorAll('.hh-chip');
+  const cta = document.querySelector('.hh-ctas');
+  const cornerL = document.getElementById('cornerL');
+  const cornerR = document.querySelector('.hh-corner-r');
+  const figure = document.getElementById('figure');
+
+  heroIntroTl = window.gsap.timeline({
+    onComplete: () => {
+      heroIntroDone = true;
+    }
+  });
+
+  // 1. Giant BABU Logo zoom in / unblur from center
+  if (giantText) {
+    heroIntroTl.fromTo(giantText, 
+      { opacity: 0, scale: 0.65, transformOrigin: 'center center', filter: 'blur(16px)' }, 
+      { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.1, ease: 'power3.out' }
+    );
+  }
+
+  // 2. Title "Babu Chinnasamy" text coming out from BABU center
+  if (hhTitle) {
+    heroIntroTl.fromTo(hhTitle, 
+      { opacity: 0, y: 45, scale: 0.82, filter: 'blur(10px)' }, 
+      { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.95, ease: 'power3.out' }, 
+      '-=0.75'
+    );
+  }
+
+  // 3. Nav links sliding/fading in
+  if (navItems.length) {
+    heroIntroTl.fromTo(navItems, 
+      { opacity: 0, y: -20 }, 
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.05, ease: 'power2.out' }, 
+      '-=0.7'
+    );
+  }
+
+  // 4. Attributes (Strategist, Commercial Leader...) emerging out from BABU to the right
+  if (attrItems.length) {
+    heroIntroTl.fromTo(attrItems, 
+      { opacity: 0, x: -35, y: 20, scale: 0.85 }, 
+      { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.75, stagger: 0.08, ease: 'back.out(1.3)' }, 
+      '-=0.55'
+    );
+  }
+
+  // 5. Stat chips (25+ Years, 5x Revenue growth) scaling out
+  if (chips.length) {
+    heroIntroTl.fromTo(chips, 
+      { opacity: 0, scale: 0.6, y: 25 }, 
+      { opacity: 1, scale: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'back.out(1.5)' }, 
+      '-=0.5'
+    );
+  }
+
+  // 6. CTA button ("Book a Call") popping out
+  if (cta) {
+    heroIntroTl.fromTo(cta, 
+      { opacity: 0, y: 35, scale: 0.8 }, 
+      { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.4)' }, 
+      '-=0.5'
+    );
+  }
+
+  // 7. Corner text blurbs
+  const corners = [cornerL, cornerR].filter(Boolean);
+  if (corners.length) {
+    heroIntroTl.fromTo(corners, 
+      { opacity: 0, y: 20 }, 
+      { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out' }, 
+      '-=0.4'
+    );
+  }
+
+  // 8. Portrait background reveal
+  if (figure) {
+    heroIntroTl.fromTo(figure, 
+      { opacity: 0, scale: 0.92, filter: 'blur(16px)' }, 
+      { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.3, ease: 'power2.out' }, 
+      '0'
+    );
+  }
+}
+
 function onScroll(){
   const rect = stage.getBoundingClientRect();
   const range = stage.offsetHeight - innerHeight;
   target = clamp(-rect.top / Math.max(range,1), 0, 1);
+  if (!heroIntroDone && target > 0.02) {
+    heroIntroDone = true;
+    if (heroIntroTl) heroIntroTl.progress(1);
+  }
 }
 addEventListener('scroll', onScroll, {passive:true});
 addEventListener('resize', () => { measure(); onScroll(); });
@@ -2548,19 +2650,21 @@ function render(){
        Blurs from 0→30px over the hero scroll, stays at max blur after. */
     const blurAmount = clamp(p * 35, 0, 30);
     const figureOpacity = clamp(1 - p * 0.35, 0.35, 1);
-    if (figure) {
+    if (figure && (heroIntroDone || p > 0.01)) {
       figure.style.filter = `blur(${blurAmount}px) saturate(${1 - p*.45})`;
       figure.style.opacity = String(figureOpacity);
       figure.style.transform = `translateX(-50%) scale(${1 + p*.06})`;
     }
 
-    if (headline) headline.style.opacity = String(1 - smooth(p/.35));
-    const hhTitle = document.getElementById('hhTitle');
-    if (hhTitle) hhTitle.style.opacity = String(1 - smooth(p/.3));
-    attrs.style.opacity    = String(1 - smooth(p/.4));
-    cornerL.style.opacity  = String(1 - smooth(p/.35));
-    if (btnAbout) btnAbout.style.opacity = String(1 - smooth(p/.4));
-    giant.style.opacity    = String(1 - fadeHero);
+    if (heroIntroDone || p > 0.01) {
+      if (headline) headline.style.opacity = String(1 - smooth(p/.35));
+      const hhTitle = document.getElementById('hhTitle');
+      if (hhTitle) hhTitle.style.opacity = String(1 - smooth(p/.3));
+      attrs.style.opacity    = String(1 - smooth(p/.4));
+      cornerL.style.opacity  = String(1 - smooth(p/.35));
+      if (btnAbout) btnAbout.style.opacity = String(1 - smooth(p/.4));
+      giant.style.opacity    = String(1 - fadeHero);
+    }
 
     /* Sidebar container fade + slide in */
     side.style.opacity = String(sideIn);
@@ -2600,10 +2704,11 @@ if (scopyBtn && semailText) {
 /* boot: wait for fonts so FLIP measurements are exact */
 function boot(){
   if (side && side.parentElement !== document.body) document.body.appendChild(side);
-  const need = {stage, side, figure, headline, attrs, cornerL, btnAbout, giant};
+  const need = {stage, side, figure, headline, attrs, cornerL, giant};
   for (const k in need) if (!need[k]) console.warn('[hh-hero] missing node:', k);
   if (!stage || !side || !figure) return;
   measure(); onScroll(); render();
+  playHeroEntranceAnimation();
 }
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot);
 else addEventListener('load', boot);
