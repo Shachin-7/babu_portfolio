@@ -2969,6 +2969,21 @@ h2 {
   padding: 0 0 60px 0 !important;
   margin-top: 0 !important;
   box-sizing: border-box;
+  position: relative;
+  z-index: 80;
+}
+
+@media (min-width: 961px) {
+  #experience {
+    margin-left: calc(var(--jr-sidebar-w, 290px) + var(--jr-gap, 34px)) !important;
+    width: calc(100% - var(--jr-sidebar-w, 290px) - var(--jr-gap, 34px)) !important;
+  }
+  .exp-zoomed-view {
+    z-index: 90 !important;
+  }
+  .exp-left-panel {
+    z-index: 100 !important;
+  }
 }
 
 #experience > * {

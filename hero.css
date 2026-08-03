@@ -457,6 +457,79 @@ body.hh-docked .hh-side {
   line-height: 1.25
 }
 
+/* ---------- Focus & Location Sidebar Cards ---------- */
+.hh-sexpertise {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hh-sbadge-mini {
+  font-family: var(--hh-black);
+  font-size: 10px;
+  letter-spacing: .08em;
+  color: #6a6a72;
+  text-transform: uppercase;
+}
+
+.hh-stags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hh-stag {
+  background: rgba(21, 21, 26, 0.06);
+  border: 1px solid rgba(21, 21, 26, 0.1);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--hh-ink);
+  letter-spacing: .01em;
+}
+
+.hh-slocation {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hh-sloc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--hh-ink);
+}
+
+.hh-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  display: inline-block;
+  flex: none;
+  animation: hhPulse 2s infinite;
+}
+
+@keyframes hhPulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.hh-sloc-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #5a5a62;
+  font-weight: 600;
+}
+
 .hh-snav {
   display: flex;
   flex-direction: column;
