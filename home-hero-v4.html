@@ -281,7 +281,6 @@ body.hh-docked .hh-side{pointer-events:auto}
 
     <div class="hh-ctas">
       <a class="hh-btn" href="mailto:cbabu.connect@gmail.com" data-fly data-to="slot-cta">Book a Call</a>
-      <a class="hh-btn" id="btnAbout" href="journey.html">About Me</a>
     </div>
 
     <p class="hh-corner-l" id="cornerL"><b>The mission-critical power expert.</b><br>That's Babu.</p>
@@ -426,7 +425,7 @@ function render(){
     if (hhTitle) hhTitle.style.opacity = String(1 - smooth(p/.3));
     attrs.style.opacity    = String(1 - smooth(p/.4));
     cornerL.style.opacity  = String(1 - smooth(p/.35));
-    btnAbout.style.opacity = String(1 - smooth(p/.4));
+    if (btnAbout) btnAbout.style.opacity = String(1 - smooth(p/.4));
     giant.style.opacity    = String(1 - fadeHero);  // svg itself flies via flyer transform
 
     // sidebar reveal
