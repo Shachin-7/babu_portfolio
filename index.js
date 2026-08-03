@@ -2670,7 +2670,6 @@ function playHeroEntranceAnimation() {
     );
   }
 }
-}
 
 function onScroll(){
   const rect = stage.getBoundingClientRect();
