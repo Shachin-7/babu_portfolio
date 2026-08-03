@@ -2660,7 +2660,7 @@ function render(){
       if (headline) headline.style.opacity = String(1 - smooth(p/.35));
       const hhTitle = document.getElementById('hhTitle');
       if (hhTitle) hhTitle.style.opacity = String(1 - smooth(p/.3));
-      attrs.style.opacity    = String(1 - smooth(p/.4));
+      if (attrs) attrs.style.opacity    = String(1 - smooth(p/.4));
       cornerL.style.opacity  = String(1 - smooth(p/.35));
       if (btnAbout) btnAbout.style.opacity = String(1 - smooth(p/.4));
       giant.style.opacity    = String(1 - fadeHero);

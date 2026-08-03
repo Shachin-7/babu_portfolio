@@ -4,7 +4,7 @@
   "description": "Babu Chinnasamy — Personal Portfolio Website",
   "main": "index.html",
   "scripts": {
-    "dev": "npx -y http-server -p 8080 ./"
+    "dev": "npx -y http-server -c-1 -p 8080 ./"
   },
   "keywords": [],
   "author": "Babu Chinnasamy",
