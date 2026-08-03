@@ -1554,43 +1554,88 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3D Tilt Card Hover Effect on phone mockup (GSAP-powered for buttery smooth physics)
+  // 3D Tilt Card Hover Effect on phone mockup (React useSpring-equivalent physics engine)
   const phone = section.querySelector('.pscroll-phone');
   if (phone) {
-    const rotateAmplitude = 12;
-    const scaleOnHover = 1.05;
+    const glare = phone.querySelector('.pscroll-glare');
+    
+    // Physics variables matching user's React setup
+    let targetX = 0, targetY = 0, targetScale = 1, targetGlareOpacity = 0;
+    let currentX = 0, currentY = 0, currentScale = 1, currentGlareOpacity = 0;
+    let vx = 0, vy = 0, vs = 0, vg = 0;
 
-    // Initialize 3D perspective variables via GSAP
-    gsap.set(phone, { transformPerspective: 1000, transformOrigin: "center center" });
+    // Spring constants (matched to Framer Motion's default responsive springs: stiffness 300, damping 30)
+    const stiffness = 300;
+    const damping = 30;
 
     phone.addEventListener('mousemove', (e) => {
       const rect = phone.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left - rect.width / 2;
-      const offsetY = e.clientY - rect.top - rect.height / 2;
+      const width = rect.width;
+      const height = rect.height;
 
-      const rotationX = (offsetY / (rect.height / 2)) * -rotateAmplitude;
-      const rotationY = (offsetX / (rect.width / 2)) * rotateAmplitude;
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
 
-      gsap.to(phone, {
-        rotateX: rotationX,
-        rotateY: rotationY,
-        scale: scaleOnHover,
-        duration: 0.45,
-        ease: "power2.out",
-        overwrite: "auto"
-      });
+      targetX = mouseX / width - 0.5;
+      targetY = mouseY / height - 0.5;
+      targetScale = 1.05;
+      targetGlareOpacity = 0.6;
     });
 
     phone.addEventListener('mouseleave', () => {
-      gsap.to(phone, {
-        rotateX: 0,
-        rotateY: 0,
-        scale: 1,
-        duration: 0.7,
-        ease: "power3.out",
-        overwrite: "auto"
-      });
+      targetX = 0;
+      targetY = 0;
+      targetScale = 1;
+      targetGlareOpacity = 0;
     });
+
+    let lastTime = performance.now();
+    let animId = null;
+    
+    function animateSpring(now) {
+      let dt = (now - lastTime) / 1000;
+      lastTime = now;
+      if (dt > 0.1) dt = 0.1; // clamp delta time to avoid instability on frame drops
+
+      // Solve spring equations for cursor positions (X & Y)
+      const ax = -stiffness * (currentX - targetX) - damping * vx;
+      vx += ax * dt;
+      currentX += vx * dt;
+
+      const ay = -stiffness * (currentY - targetY) - damping * vy;
+      vy += ay * dt;
+      currentY += vy * dt;
+
+      // Solve spring equations for scale factor
+      const as = -stiffness * (currentScale - targetScale) - damping * vs;
+      vs += as * dt;
+      currentScale += vs * dt;
+
+      // Solve spring equations for glare opacity
+      const ag = -stiffness * (currentGlareOpacity - targetGlareOpacity) - damping * vg;
+      vg += ag * dt;
+      currentGlareOpacity += vg * dt;
+
+      // Compute exact 3D transforms matching the user's React motion parameters
+      const rotateX = currentY * 35;
+      const rotateY = currentX * -35;
+      const translateX = currentX * 40;
+      const translateY = currentY * -40;
+
+      // Apply transforms on phone
+      phone.style.transform = `perspective(1500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateX(${translateX}px) translateY(${translateY}px) scale(${currentScale})`;
+
+      // Render glare gradient position matching mouse percent values
+      if (glare) {
+        glare.style.opacity = currentGlareOpacity;
+        glare.style.background = `radial-gradient(circle at ${(currentX + 0.5) * 100}% ${(currentY + 0.5) * 100}%, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.75) 20%, rgba(255, 255, 255, 0) 80%)`;
+      }
+
+      animId = requestAnimationFrame(animateSpring);
+    }
+
+    // Start spring simulation
+    animId = requestAnimationFrame(animateSpring);
   }
 
   // Bind scroll event
@@ -2527,6 +2572,7 @@ function playHeroEntranceAnimation() {
     return;
   }
 
+  const giant = document.getElementById('giant');
   const giantText = document.querySelector('#giant text');
   const hhTitle = document.getElementById('hhTitle');
   const navItems = document.querySelectorAll('.hh-nav li');
@@ -2543,77 +2589,87 @@ function playHeroEntranceAnimation() {
     }
   });
 
-  // 1. Giant BABU Logo zoom in / unblur from center
-  if (giantText) {
-    heroIntroTl.fromTo(giantText, 
-      { opacity: 0, scale: 0.65, transformOrigin: 'center center', filter: 'blur(16px)' }, 
-      { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.1, ease: 'power3.out' }
+  // 1. Heynesh.com style: Giant BABU logo/text slides in from left offscreen to center stage
+  if (giant) {
+    heroIntroTl.fromTo(giant, 
+      { opacity: 0, x: '-75vw', scale: 0.95 }, 
+      { opacity: 1, x: '0vw', scale: 1, duration: 1.25, ease: 'power4.out' }
     );
   }
 
-  // 2. Title "Babu Chinnasamy" text coming out from BABU center
-  if (hhTitle) {
-    heroIntroTl.fromTo(hhTitle, 
-      { opacity: 0, y: 45, scale: 0.82, filter: 'blur(10px)' }, 
-      { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.95, ease: 'power3.out' }, 
+  // 2. Unblur & gentle scale effect on giant text inner element
+  if (giantText) {
+    heroIntroTl.fromTo(giantText,
+      { filter: 'blur(16px)' },
+      { filter: 'blur(0px)', duration: 1.0, ease: 'power2.out' },
+      '0'
+    );
+  }
+
+  // 3. Portrait background reveals smoothly behind centered BABU
+  if (figure) {
+    heroIntroTl.fromTo(figure, 
+      { opacity: 0, scale: 0.9, filter: 'blur(16px)' }, 
+      { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power2.out' }, 
       '-=0.75'
     );
   }
 
-  // 3. Nav links sliding/fading in
+  // 4. Main Title "Babu Chinnasamy" text scales up & unblurs
+  if (hhTitle) {
+    heroIntroTl.fromTo(hhTitle, 
+      { opacity: 0, y: 35, scale: 0.85, filter: 'blur(10px)' }, 
+      { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out' }, 
+      '-=0.8'
+    );
+  }
+
+  // 5. Navigation items slide down with a crisp stagger
   if (navItems.length) {
     heroIntroTl.fromTo(navItems, 
-      { opacity: 0, y: -20 }, 
-      { opacity: 1, y: 0, duration: 0.6, stagger: 0.05, ease: 'power2.out' }, 
+      { opacity: 0, y: -25 }, 
+      { opacity: 1, y: 0, duration: 0.65, stagger: 0.06, ease: 'power3.out' }, 
       '-=0.7'
     );
   }
 
-  // 4. Attributes (Strategist, Commercial Leader...) emerging out from BABU to the right
+  // 6. Attributes card (Strategist, Commercial Leader...) emerges with spring ease
   if (attrItems.length) {
     heroIntroTl.fromTo(attrItems, 
-      { opacity: 0, x: -35, y: 20, scale: 0.85 }, 
-      { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.75, stagger: 0.08, ease: 'back.out(1.3)' }, 
+      { opacity: 0, x: 45, y: 15, scale: 0.88 }, 
+      { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, stagger: 0.07, ease: 'back.out(1.3)' }, 
       '-=0.55'
     );
   }
 
-  // 5. Stat chips (25+ Years, 5x Revenue growth) scaling out
+  // 7. Stat chips (25+ Years, 5x Revenue growth) pop into place
   if (chips.length) {
     heroIntroTl.fromTo(chips, 
-      { opacity: 0, scale: 0.6, y: 25 }, 
-      { opacity: 1, scale: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'back.out(1.5)' }, 
+      { opacity: 0, scale: 0.6, y: 20 }, 
+      { opacity: 1, scale: 1, y: 0, duration: 0.75, stagger: 0.1, ease: 'back.out(1.4)' }, 
       '-=0.5'
     );
   }
 
-  // 6. CTA button ("Book a Call") popping out
+  // 8. CTA button ("Book a Call") pops out
   if (cta) {
     heroIntroTl.fromTo(cta, 
-      { opacity: 0, y: 35, scale: 0.8 }, 
-      { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.4)' }, 
-      '-=0.5'
+      { opacity: 0, y: 30, scale: 0.8 }, 
+      { opacity: 1, y: 0, scale: 1, duration: 0.75, ease: 'back.out(1.4)' }, 
+      '-=0.45'
     );
   }
 
-  // 7. Corner text blurbs
+  // 9. Corner text blurbs fade into position
   const corners = [cornerL, cornerR].filter(Boolean);
   if (corners.length) {
     heroIntroTl.fromTo(corners, 
-      { opacity: 0, y: 20 }, 
-      { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out' }, 
+      { opacity: 0, y: 15 }, 
+      { opacity: 1, y: 0, duration: 0.65, stagger: 0.08, ease: 'power2.out' }, 
       '-=0.4'
     );
   }
-
-  // 8. Portrait background reveal
-  if (figure) {
-    heroIntroTl.fromTo(figure, 
-      { opacity: 0, scale: 0.92, filter: 'blur(16px)' }, 
-      { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.3, ease: 'power2.out' }, 
-      '0'
-    );
-  }
+}
 }
 
 function onScroll(){

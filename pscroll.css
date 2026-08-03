@@ -122,7 +122,11 @@
   border: 1.5px solid #2c2c2c;
   box-shadow:
     0 0 0 5px #121212,
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    rgba(0, 0, 0, 0.01) 0px 520px 146px 0px,
+    rgba(0, 0, 0, 0.04) 0px 333px 133px 0px,
+    rgba(0, 0, 0, 0.26) 0px 83px 83px 0px,
+    rgba(0, 0, 0, 0.29) 0px 21px 46px 0px;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
@@ -614,4 +618,45 @@
 
   .pscroll-phone { width: 220px; height: 440px; }
   .pscroll-title  { font-size: 26px; }
+}
+
+/* ── 3D Phone & Glare Styles ── */
+.pscroll-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  border-radius: 48px;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.75) 20%, rgba(255, 255, 255, 0) 80%);
+  transition: opacity 0.25s ease;
+  will-change: background, opacity;
+}
+
+.pscroll-phone-wrap {
+  perspective: 1500px !important;
+}
+
+.pscroll-phone {
+  transform-style: preserve-3d !important;
+}
+
+.pscroll-screen-viewport {
+  transform-style: preserve-3d !important;
+}
+
+.pscroll-screen {
+  transform-style: preserve-3d !important;
+}
+
+/* Float inner elements of active screen in 3D Space */
+.pscroll-screen.active > * {
+  transform: translateZ(28px);
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pscroll-phone:hover .pscroll-screen.active > * {
+  transform: translateZ(46px);
 }
