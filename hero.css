@@ -94,13 +94,7 @@ body.hh {
 
 /* ---------- name / role lockup ---------- */
 .hh-title {
-  position: absolute;
-  top: 13vh;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 5;
-  will-change: opacity, transform;
+  display: none !important;
 }
 
 .hh-title b {
